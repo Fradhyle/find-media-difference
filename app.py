@@ -10,15 +10,18 @@ def count_ext(path: Path) -> dict[str, int]:
     Returns:
         dict[str, int]: A dictionary with file extensions as keys and their counts as values.
     """
+    SKIP_EXTS = {".tmp", ".log", ".ini", ".zip", ".lrv", ".insv"}
     ext_count = {}
 
     for file in path.rglob("*"):
         if file.is_file():
             ext = file.suffix.lower()
-            if ext in ext_count:
+            if ext in ext_count and ext not in SKIP_EXTS:
                 ext_count[ext] += 1
-            else:
+            elif ext not in ext_count and ext not in SKIP_EXTS:
                 ext_count[ext] = 1
+            else:
+                continue
 
     return ext_count
 
@@ -32,8 +35,17 @@ def compare_files(path1: Path, path2: Path) -> list[Path]:
 
     Returns:
         list[Path]: A list of files that are unique to either directory."""
-    files1 = {file.relative_to(path1) for file in path1.rglob("*") if file.is_file()}
-    files2 = {file.relative_to(path2) for file in path2.rglob("*") if file.is_file()}
+    SKIP_EXTS = {".tmp", ".log", ".ini", ".zip", ".lrv", ".insv"}
+    files1 = {
+        file.relative_to(path1)
+        for file in path1.rglob("*")
+        if file.is_file() and file.suffix not in SKIP_EXTS
+    }
+    files2 = {
+        file.relative_to(path2)
+        for file in path2.rglob("*")
+        if file.is_file() and file.suffix not in SKIP_EXTS
+    }
 
     unique = files1.symmetric_difference(files2)
 
