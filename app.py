@@ -61,11 +61,11 @@ def compare_files(path1: Path, path2: Path) -> list[Path]:
 
 
 if __name__ == "__main__":
-    first_path = Path(r"input().strip("\u202a")")
-    second_path = Path(r"input().strip("\u202a")")
+    first_path = Path(r"input().strip(r"\u202a")")
+    second_path = Path(r"input().strip(r"\u202a")")
     print("First path:", count_ext(first_path))
     print("Second path:", count_ext(second_path))
 
     with open("unique_files.txt", "a+") as f:
         for file in compare_files(first_path, second_path):
-            f.write(str(file) + "\n")
+            f.write(str(file) + r"\n")
